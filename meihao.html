@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跳转中...</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #f7f8fc 0%, #eef2ff 100%);
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+        .card {
+            background: #ffffff;
+            width: 90%;
+            max-width: 480px;
+            padding: 48px 32px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        /* Loading旋转动画 */
+        .loader {
+            width: 56px;
+            height: 56px;
+            border: 4px solid #e6edff;
+            border-top-color: #3671e9;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 24px;
+        }
+        @keyframes spin {
+            to {transform: rotate(360deg);}
+        }
+        h2 {
+            font-size: 24px;
+            color: #1d2939;
+            margin-bottom: 12px;
+        }
+        .desc {
+            font-size: 15px;
+            color: #667085;
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+        .error-text {
+            font-size: 18px;
+            color: #d92d20;
+            margin-bottom: 20px;
+        }
+        .btn-link {
+            display: inline-block;
+            padding: 14px 36px;
+            background-color: #3671e9;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.25s ease;
+        }
+        .btn-link:hover {
+            background-color: #2859c4;
+        }
+        .tip-small {
+            margin-top: 16px;
+            font-size: 13px;
+            color: #98a2b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="loader" id="loadingIcon"></div>
+        <h2>正在前往注册页面</h2>
+        <p class="desc">系统正在分配最优线路，请稍候片刻</p>
+        <p class="error-text" id="errorMsg"></p>
+        <a href="" class="btn-link" id="manualLink" style="display:none;">手动点击跳转</a>
+        <p class="tip-small">若长时间无响应，请点击上方按钮</p>
+    </div>
+
+<script>
+// ======================【配置区域，填入你的域名】======================
+const DOMAIN_LIST = [
+"https://zh9yt1sx.zycypc.com",
+"https://ap4oo2wp.zycypc.com",
+"https://xq4hw2sw.zycypc.com",
+"https://rq9ac5ap.zycypc.com",
+"https://ls7bt3bb.zycypc.com",
+"https://if8yh2of.zycypc.com",
+"https://hh6vy9cz.zycypc.com",
+"https://ic9ej8ge.zycypc.com",
+"https://hz2ow7qa.zycypc.com",
+"https://qs3qs9fo.zycypc.com",
+"https://cr0kz5ra.zycypc.com",
+"https://ba8ba0qx.zycypc.com",
+"https://el7st3hl.zycypc.com",
+"https://gq0ux8uc.zycypc.com",
+"https://wa7vj8ha.zycypc.com",
+"https://ea0sa7ac.zycypc.com",
+"https://xu1rs6xg.zycypc.com",
+"https://zt2ez9vz.zycypc.com",
+"https://jp0gv5ni.zycypc.com",
+"https://yb8ie2ab.zycypc.com",
+"https://ac9dl3zy.zycypc.com",
+"https://ae2zh1mt.zycypc.com",
+"https://no1se1uh.zycypc.com",
+"https://ud9zo9qu.zycypc.com",
+    "https://d6d8o2g3.txbm.shop",
+"https://s2h4b8u1.txbm.shop",
+"https://y6t5k9h9.txbm.shop",
+"https://o2q0f6z7.txbm.shop",
+"https://y4z4g4q8.txbm.shop",
+"https://y7r5a7u1.txbm.shop",
+"https://d7t8p9l4.txbm.shop",
+"https://y8q6b7t2.txbm.shop",
+"https://z4t5y0b5.txbm.shop",
+"https://t4n1p5p7.txbm.shop",
+"https://t4j8l5i3.txbm.shop",
+"https://p6a7q8x0.txbm.shop",
+"https://z4b9p5o4.txbm.shop",
+"https://k8f7p5n4.txbm.shop",
+"https://s8o0j8k7.txbm.shop",
+"https://t2e5n8z4.txbm.shop",
+"https://i2m2q0a4.txbm.shop",
+"https://z1r0q1p7.txbm.shop",
+"https://x7i3m2s8.huaniang.shop",
+"https://o3b4t9i1.huaniang.shop",
+"https://m8z4v4g4.huaniang.shop",
+"https://n4n5b4c0.huaniang.shop",
+"https://a7m2s5z2.huaniang.shop",
+"https://y9o1d9x0.huaniang.shop",
+"https://z5e4v8i6.huaniang.shop",
+"https://y9h2o5v0.huaniang.shop",
+"https://e0n8k9n5.huaniang.shop",
+"https://a0w0s1c2.huaniang.shop",
+"https://s0o5s8r0.huaniang.shop",
+"https://y6c6i6r9.huaniang.shop",
+"https://o9a9m0z9.huaniang.shop",
+"https://j5k2l9z4.huaniang.shop",
+"https://o4m5h8o0.huaniang.shop",
+"https://h5i9j5o7.huaniang.shop",
+"https://x5i2r1b9.huaniang.shop",
+"https://l1o0g5k0.huaniang.shop",
+"https://e5y6l3o6.huaniang.shop",
+"https://i0x9m1p1.huaniang.shop",
+
+    // 继续添加更多域名，格式 "https://xxx.com",
+];
+const DEFAULT_INVITE = "";
+// =================================================================
+
+function getRandomDomain(){
+    const randomIndex = Math.floor(Math.random() * DOMAIN_LIST.length);
+    return DOMAIN_LIST[randomIndex];
+}
+
+(function(){
+    const queryRaw = window.location.search.slice(1);
+    let inviteCode = DEFAULT_INVITE;
+
+    if(queryRaw){
+        const realParamStr = queryRaw.split("?").pop();
+        const innerParams = new URLSearchParams(realParamStr);
+        inviteCode = innerParams.get('invite') || DEFAULT_INVITE;
+    }
+
+    const errorDom = document.getElementById("errorMsg");
+    const linkDom = document.getElementById('manualLink');
+    const loadingIcon = document.getElementById('loadingIcon');
+
+    if(!inviteCode){
+        errorDom.innerText = "未能识别有效的邀请码";
+        loadingIcon.style.display = "none";
+        return;
+    }
+
+    const randomDomain = getRandomDomain();
+    const targetUrl = `${randomDomain}/register.php?invite=${inviteCode}`;
+
+    linkDom.href = targetUrl;
+    linkDom.style.display = "inline-block";
+
+    // 原生页面跳转
+    window.location.href = targetUrl;
+})();
+</script>
+</body>
+</html>
